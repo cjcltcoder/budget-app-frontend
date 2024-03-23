@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -21,20 +22,20 @@ const HomePage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }), // Send only email and password
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (response.ok) {
         console.log('Login successful:', data);
+        // Save token to localStorage
+        localStorage.setItem('token', data.token);
         // Redirect to dashboard page
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       } else {
         console.error('Login failed:', data.message);
-        // Handle login failure (display error message, etc.)
       }
     } catch (error) {
       console.error('Error logging in:', error);
-      // Handle error (display error message, etc.)
     }
   };
 
